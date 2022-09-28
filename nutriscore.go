@@ -35,13 +35,41 @@ type NutritionalData struct {
 	IsWater             bool
 }
 
+func (e EnergyKJ) GetPoints(st ScoreType) int {
+
+}
+
+func (s SugarGram) GetPoints(st ScoreType) int {
+
+}
+
+func (sfa SaturatedFattyAcids) GetPoints(st ScoreType) int {
+
+}
+
+func (so SodiumMilligram) GetPoints (st ScoreType) int {
+
+}
+
+func (f FruitsPercent)GetPoints (st ScoreType) int {
+
+}
+
+func (fg FibreGram) GetPoints (st ScoreType) int {
+
+}
+
+func  (p ProteinGram) GetPoints (st ScoreType) int {
+
+}
+
 func GetNutritionalScore(n NutritionalData, st ScoreType) NutritionalScore {
 
 	value := 0
 	positive := 0
 	negative := 0
 
-	if st !=  Water {
+	if st != Water {
 		fruitPoints := n.Fruits.GetPoints()
 		fibrePoints := n.Fibre.GetPoints()
 
@@ -49,10 +77,10 @@ func GetNutritionalScore(n NutritionalData, st ScoreType) NutritionalScore {
 		positive = fruitPoints + fibrePoints + n.Protein.GetPoints()
 	}
 
-	return NutritionalScore {
-		Value: value, 
-		Positive: positive, 
-		Negative: negative,
+	return NutritionalScore{
+		Value:     value,
+		Positive:  positive,
+		Negative:  negative,
 		ScoreType: st,
 	}
 }
