@@ -46,31 +46,54 @@ var energyLevelsBeverage = []float64{270, 240, 210, 180, 150, 120, 90, 60, 30, 0
 var sugarsLevelsBeverage = []float64{13.5, 12, 10.5, 9, 7.5, 6, 4.5, 3, 1.5, 0}
 
 func (e EnergyKJ) GetPoints(st ScoreType) int {
-
+	if st == Beverage {
+		return getPointsFromRange(float64(e), energyLevelsBeverage)
+	}
+	return getPointsFromRange(float64(e), energyLevels)
 }
 
 func (s SugarGram) GetPoints(st ScoreType) int {
-
+	if st == Beverage {
+		return getPointsFromRange(float64(s), sugarsLevelsBeverage)
+	}
+	return getPointsFromRange(float64(s), sugarsLevels)
 }
 
 func (sfa SaturatedFattyAcids) GetPoints(st ScoreType) int {
-
+	return getPointsFromRange(float64(sfa), saturatedFattyAcidsLevels)
 }
 
 func (so SodiumMilligram) GetPoints(st ScoreType) int {
-
+	return getPointsFromRange(float64(so), sodiumLevels)
 }
 
 func (f FruitsPercent) GetPoints(st ScoreType) int {
-
+	if st == Beverage {
+		if f > 80 {
+			return 10
+		} else if f > 60 {
+			return 4
+		} else if f > 40 {
+			return 2
+		}
+		return 0
+	}
+	if f > 80 {
+		return 5
+	} else if f > 60 {
+		return 2
+	} else if f > 40 {
+		return 1
+	}
+	return 0
 }
 
 func (fg FibreGram) GetPoints(st ScoreType) int {
-
+	return getPointsFromRange(float64(f), fibreLevels)
 }
 
 func (p ProteinGram) GetPoints(st ScoreType) int {
-
+	return getPointsFromRange(float64(p), proteinLevels)
 }
 
 func EnergyFromKcal(kcal float64) EnergyKJ {
@@ -93,6 +116,17 @@ func GetNutritionalScore(n NutritionalData, st ScoreType) NutritionalScore {
 
 		negative = n.Energy.GetPoints() + n.Sugars.GetPoints() + n.SaturatedFattyAcids.GetPoints() + n.Sodium.GetPoints()
 		positive = fruitPoints + fibrePoints + n.Protein.GetPoints()
+
+		if st == Cheese {
+			value = negative - positive
+		} else {
+			if negative >= 11 && fruitPoints < 5 {
+				value = negative - positive - fruitPoints
+			} else {
+				value = negative - positive
+			}
+		}
+	
 	}
 
 	return NutritionalScore{
@@ -101,6 +135,10 @@ func GetNutritionalScore(n NutritionalData, st ScoreType) NutritionalScore {
 		Negative:  negative,
 		ScoreType: st,
 	}
+}
+
+func (ns NutritionalScore) GetNutriScore() string {
+
 }
 
 func getPointsFromRange(v float64, steps []float64) int {
